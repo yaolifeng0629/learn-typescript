@@ -14,5 +14,5 @@ npx tsc --init
 ```
 3.  run the follows command in the terminal
 ```bash
-ts-node xxx.ts
+npx ts-node-dev xxx.ts
 ```
