@@ -41,9 +41,51 @@
 // numericLiteralType('8', '2');
 
 // combine the non-literal type
-function getWidth(x: number | 'auto') {
-    // ...
-}
-getWidth(100);
-getWidth('auto');
+// function getWidth(x: number | 'auto') {
+//     // ...
+// }
+// getWidth(100);
+// getWidth('auto');
 // getWidth('100px'); // Error: Type '"100px"' is not assignable to type '
+
+// function
+// function greeter(fn: (a: string) => void) {
+//     fn('Hello, ');
+// }
+// function logInfo(s: string) {
+//     console.log(s + 'World');
+// }
+// greeter(logInfo);
+
+// equal to:
+// type greeterFn = (a: string) => void;
+// function greeter(fn: greeterFn) {
+//     fn('Hello, ');
+// }
+// function logInfo(s: string) {
+//     console.log(s + 'World');
+// }
+// greeter(logInfo);
+
+// addition some parameter
+// type DescribableFunction = {
+//     description: string;
+//     (someArg: number): boolean;
+// };
+// function doSomething(fn: DescribableFunction) {
+//     console.log(fn.description + ' returned ' + fn(1,2,3,4,5,45,6));
+// }
+
+// function myFunc(someArg: number) {
+//     return someArg > 3;
+// }
+// myFunc.description = 'default description';
+
+// doSomething(myFunc);
+
+// not fixed nums parameter
+function getSum(...arg: any[]): void {
+    console.log(arg);
+}
+getSum(1, "2", 'b', 3, 4, 5, 6, 78, 89,);
+

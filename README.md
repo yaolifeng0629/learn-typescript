@@ -22,6 +22,10 @@ npx tsc --init
 3.  run the follows command in the terminal
 
 ```bash
+# once
+npx ts-node xxx.ts
+
+# dev
 npx ts-node-dev xxx.ts
 ```
 
@@ -330,3 +334,66 @@ const req = { url: "https://example.com", method: "GET" } as const;
 handleRequest(req.url, req.method);
 ```
 The as const suffix acts like const but for the type system, ensuring that all properties are assigned the literal type instead of a more general version like string or number.
+
+##### non-null Assertion operator
+it's represents x is null or undefined.
+```ts
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
+}
+```
+## Functions
+```ts
+function greeter(fn: (a: string) => void) {
+    fn('Hello, ');
+}
+
+function logInfo(s: string) {
+    console.log(s + 'World');
+}
+
+greeter(logInfo);
+
+// equal to
+type greeterFn = (a: string) => void;
+function greeter(fn: greeterFn) {
+    fn('Hello, ');
+}
+function logInfo(s: string) {
+    console.log(s + 'World');
+}
+greeter(logInfo);
+```
+-   addition some parameter
+```ts
+type DescribableFunction = {
+    description: string;
+    (someArg: number): boolean;
+};
+function doSomething(fn: DescribableFunction) {
+    console.log(fn.description + ' returned ' + fn(6));
+}
+
+function myFunc(someArg: number) {
+    return someArg > 3;
+}
+myFunc.description = 'default description';
+
+doSomething(myFunc);
+```
+-   How to solve the not ensure number parameter?
+1.  using generic type, but all params are same format.
+```ts
+function getSum<T>(...arg: T[]): void {
+    console.log(arg);
+}
+getSum(1, 2, 3, 4, 5, 6, 78, 89,);
+```
+2.  using any type, it's don't have limit params type
+```ts
+function getSum(...arg: any[]): void {
+    console.log(arg);
+}
+getSum(1, "2", 'b', 3, 4, 5, 6, 78, 89);
+```
