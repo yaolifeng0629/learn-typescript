@@ -105,20 +105,28 @@
 // }
 
 // declaring this in function
-interface OriginalUser {
-    name: string;
-}
-interface User extends OriginalUser {
-    age: number;
-    getName(this: OriginalUser): string;
+// interface OriginalUser {
+//     name: string;
+// }
+// interface User extends OriginalUser {
+//     age: number;
+//     getName(this: OriginalUser): string;
+// }
+
+// const user: User = {
+//     name: 'tes',
+//     age: 30,
+//     getName() {
+//         return this.name;
+//     }
+// };
+
+// console.log(user.getName());
+
+// index signatures
+interface StringArray {
+    [index: number]: string;
 }
 
-const user: User = {
-    name: 'tes',
-    age: 30,
-    getName() {
-        return this.name;
-    }
-};
-
-console.log(user.getName());
+const myArray: StringArray = getStringArray();
+const secondItem = myArray[1];
