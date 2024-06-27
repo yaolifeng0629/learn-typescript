@@ -84,8 +84,41 @@
 // doSomething(myFunc);
 
 // not fixed nums parameter
-function getSum(...arg: any[]): void {
-    console.log(arg);
-}
-getSum(1, "2", 'b', 3, 4, 5, 6, 78, 89,);
+// function getSum(...arg: any[]): void {
+//     console.log(arg);
+// }
+// getSum(1, "2", 'b', 3, 4, 5, 6, 78, 89,);
 
+// optional parameter
+// function f(x?: number) {
+//     // ...
+// }
+// f();
+// f(10);
+// f(undefined);
+
+// optional parameter callbacks
+// function myForEach(arr: any[], callback: (arg: any, index?: number) => void) {
+//     for (let i = 0; i < arr.length; i++) {
+//         callback(arr[i], i);
+//     }
+// }
+
+// declaring this in function
+interface OriginalUser {
+    name: string;
+}
+interface User extends OriginalUser {
+    age: number;
+    getName(this: OriginalUser): string;
+}
+
+const user: User = {
+    name: 'tes',
+    age: 30,
+    getName() {
+        return this.name;
+    }
+};
+
+console.log(user.getName());
