@@ -124,9 +124,47 @@
 // console.log(user.getName());
 
 // index signatures
-interface StringArray {
-    [index: number]: string;
-}
+// interface StringArray {
+//     [index: number]: string;
+// }
 
-const myArray: StringArray = getStringArray();
-const secondItem = myArray[1];
+// const myArray: StringArray = getStringArray();
+// const secondItem = myArray[1];
+
+// intersection types
+// interface Colorful {
+//     color: string;
+// }
+// interface Circle {
+//     radius: number;
+// }
+
+// type ColorfulCircle = Colorful & Circle;
+
+// declares a type parameter
+// interface Box<Type> {
+//     contents: Type;
+// }
+
+// const box: Box<number> = {
+//     contents: 1
+// }
+
+// const box2: Box<string> = {
+//     contents: 'hello'
+// }
+
+// const box3: Box<boolean> = {
+//     contents: true
+// }
+
+// const box4: Box<number[]> = {
+//     contents: [1, 2, 3]
+// }
+
+// console.log('box --->', box.contents); // 1
+// console.log('box --->', box2.contents); // hello
+// console.log('box --->', box3.contents); // true
+// console.log('box --->', box4.contents); // [1, 2, 3]
+
+// keyof type operator

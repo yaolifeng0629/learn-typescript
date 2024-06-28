@@ -572,3 +572,49 @@ interface StringArray {
 const myArray: StringArray = getStringArray();
 const secondItem = myArray[1];
 ```
+
+-   Intersection Types
+```ts
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+
+type ColorfulCircle = Colorful & Circle;
+```
+-   when you don't know a interface are any types, so you can use following type.
+```ts {2}
+interface Box<Type> {
+  contents: Type;
+}
+
+// how to use
+interface Box<Type> {
+    contents: Type;
+}
+
+const box: Box<number> = {
+    contents: 1
+}
+
+const box2: Box<string> = {
+    contents: 'hello'
+}
+
+const box3: Box<boolean> = {
+    contents: true
+}
+
+const box4: Box<number[]> = {
+    contents: [1, 2, 3]
+}
+
+console.log('box --->', box.contents); // 1
+console.log('box --->', box2.contents); // hello
+console.log('box --->', box3.contents); // true
+console.log('box --->', box4.contents); // [1, 2, 3]
+```
+
+## keyof type operator
