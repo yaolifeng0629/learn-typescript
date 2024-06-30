@@ -618,3 +618,12 @@ console.log('box --->', box4.contents); // [1, 2, 3]
 ```
 
 ## keyof type operator
+-   keyof operator be used for get Point types all key, On time, You can use P types limit the function params just be a Point object key.
+```ts
+type Point = { x: number; y: number };
+type P = keyof Point;
+
+function getPointValue(point: Point, key: P): number {
+  return point[key];
+}
+```
