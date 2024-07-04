@@ -618,3 +618,170 @@ console.log('box --->', box4.contents); // [1, 2, 3]
 ```
 
 ## keyof type operator
+-   The keyof operator takes an object type and produces a string or numeric literal of its keys.
+```ts
+type Point = { x: number; y: number };
+type P = keyof Point;
+    // type P = "x" | "y";
+```
+-   the type has a string or number index signature, keyof will return those types instead.
+```ts
+type Arrayish = { [n: number]: unknown };
+type A = keyof Arrayish;
+    // type A = number
+
+type Mapish = { [k: string]: boolean };
+type M = keyof Mapish;
+    // type M = string | number
+```
+-   Note that in this example, M is string | number —— this is because javascript object keys are always coerced to a string, so Object[0] is always the same as Object['0'];
+
+## Typeof operator
+-   let's start by looking at the predefined type `ReturnType<T>`. It takes a functions type and produces its return type.
+
+```ts
+type Predicate = (x: unknown) => boolean;
+type K = ReturnType<Predicate>;
+    // type K = boolean
+```
+-   if type to use `ReturnType<T>` on a function name, we see an instructive error.
+```ts
+function f() {
+  return { x: 10, y: 3 };
+}
+
+type P = ReturnType<f>;
+// 'f' refers to a value, but is being used as a type here. Did you mean 'typeof f'?
+```
+-   Remember that values and types aren’t the same thing. To refer to the type that the value f has, we use typeof:
+```ts
+function f() {
+  return { x: 10, y: 3 };
+}
+type P = ReturnType<typeof f>;
+    // type P = {
+    //     x: number;
+    //     y: number;
+    // }
+```
+
+## Indexed access type
+```ts
+type Person = { age: number; name: string; alive: boolean };
+type Age = Person["age"];
+    // type Age = number
+```
+-   the more simple writing.
+```ts
+type I1 = Person["age" | "name"];
+    // type I1 = string | number
+
+type I2 = Person[keyof Person];
+    // type I2 = string | number | boolean
+
+type AliveOrName = "alive" | "name";
+type I3 = Person[AliveOrName];
+    // type I3 = string | boolean
+```
+-   examples:
+```ts
+const key = "age";
+type Age = Person[key];
+    // Type 'key' cannot be used as an index type.
+    // 'key' refers to a value, but is being used as a type here. Did you mean 'typeof key'?
+
+
+type key = "age";
+type Age = Person[key];
+```
+
+## conditional types
+```ts
+interface Animal {
+  live(): void;
+}
+interface Dog extends Animal {
+  woof(): void;
+}
+
+type Example1 = Dog extends Animal ? number : string;
+    // type Example1 = number
+
+type Example2 = RegExp extends Animal ? number : string;
+    // type Example2 = string
+```
+-   The grammar as following:
+```ts
+SomeType extends OtherType ? TrueType : FalseType;
+```
+-   We can write some useful helper type aliases using the infer keyword. For example, for simple cases, we can extract the return type out from function types:
+```ts
+type GetReturnType<Type> = Type extends (...args: never[]) => infer Return
+  ? Return
+  : never;
+
+type Num = GetReturnType<() => number>;
+    // type Num = number
+
+type Str = GetReturnType<(x: string) => string>;
+    // type Str = string
+
+type Bools = GetReturnType<(a: boolean, b: boolean) => boolean[]>;
+    // type Bools = boolean[]
+```
+
+## Mapped types
+```ts
+type OptionsFlags<Type> = {
+  [Property in keyof Type]: boolean;
+};
+```
+-   There are two additional modifiers which can be applied during mapping: readonly and ? which affect mutability and optionality respectively.
+
+-   You can remove or add these modifiers by prefixing with - or +. If you don’t add a prefix, then + is assumed.
+
+```ts
+// Removes 'readonly' attributes from a type's properties
+type CreateMutable<Type> = {
+  -readonly [Property in keyof Type]: Type[Property];
+};
+
+type LockedAccount = {
+  readonly id: string;
+  readonly name: string;
+};
+
+type UnlockedAccount = CreateMutable<LockedAccount>;
+    // type UnlockedAccount = {
+    //     id: string;
+    //     name: string;
+    // }
+```
+
+```ts
+// Removes 'optional' attributes from a type's properties
+type Concrete<Type> = {
+  [Property in keyof Type]-?: Type[Property];
+};
+
+type MaybeUser = {
+  id: string;
+  name?: string;
+  age?: number;
+};
+
+type User = Concrete<MaybeUser>;
+    // type User = {
+    //     id: string;
+    //     name: string;
+    //     age: number;
+    // }
+```
+
+### Key Remapping via `as`
+-   In TypeScript 4.1 and onwards, you can re-map keys in mapped types with an as clause in a mapped type:
+```ts
+type MappedTypeWithNewProperties<Type> = {
+    [Properties in keyof Type as NewKeyType]: Type[Properties]
+}
+```
