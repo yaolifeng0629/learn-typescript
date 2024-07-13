@@ -168,5 +168,6 @@
 // console.log('box --->', box4.contents); // [1, 2, 3]
 
 // keyof type operator
-type Point = { x: number; y: number };
-type P = keyof Point;
+// type Point = { x: number; y: number };
+// type P = keyof Point;
+

@@ -228,7 +228,7 @@ interface User {
 const user: User = {
     name: 'Alice',
     age: 30,
-    email: 'alice@example.com'
+    email: 'alice@example.com',
 };
 ```
 
@@ -259,7 +259,7 @@ const user: User = {
     name: 'Bob',
     age: 25,
     email: 'bob@example.com',
-    phone: '123-456-7890'
+    phone: '123-456-7890',
 };
 ```
 
@@ -462,7 +462,7 @@ const obj: MyObject = {
     property: 42,
     method: function () {
         console.log(this.property);
-    }
+    },
 };
 
 obj.method(); // 输出: 42
@@ -600,19 +600,19 @@ interface Box<Type> {
 }
 
 const box: Box<number> = {
-    contents: 1
+    contents: 1,
 };
 
 const box2: Box<string> = {
-    contents: 'hello'
+    contents: 'hello',
 };
 
 const box3: Box<boolean> = {
-    contents: true
+    contents: true,
 };
 
 const box4: Box<number[]> = {
-    contents: [1, 2, 3]
+    contents: [1, 2, 3],
 };
 
 console.log('box --->', box.contents); // 1
@@ -876,58 +876,271 @@ type ExtendedPerson = {
 ```
 
 ## Template Literal Types
+
 ```ts
-type EmailLocaleIDs = "welcome_email" | "email_heading";
-type FooterLocaleIDs = "footer_title" | "footer_sendoff";
+type EmailLocaleIDs = 'welcome_email' | 'email_heading';
+type FooterLocaleIDs = 'footer_title' | 'footer_sendoff';
 
 type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
-    // type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
+// type AllLocaleIDs = "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
 ```
+
 -   For each interpolated position in the template literal, the unions are cross multiplied:
+
 ```ts
 type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
-type Lang = "en" | "ja" | "pt";
+type Lang = 'en' | 'ja' | 'pt';
 
 type LocaleMessageIDs = `${Lang}_${AllLocaleIDs}`;
-    // type LocaleMessageIDs = "en_welcome_email_id" | "en_email_heading_id" | "en_footer_title_id" | "en_footer_sendoff_id" | "ja_welcome_email_id" | "ja_email_heading_id" | "ja_footer_title_id" | "ja_footer_sendoff_id" | "pt_welcome_email_id" | "pt_email_heading_id" | "pt_footer_title_id" | "pt_footer_sendoff_id"
+// type LocaleMessageIDs = "en_welcome_email_id" | "en_email_heading_id" | "en_footer_title_id" | "en_footer_sendoff_id" | "ja_welcome_email_id" | "ja_email_heading_id" | "ja_footer_title_id" | "ja_footer_sendoff_id" | "pt_welcome_email_id" | "pt_email_heading_id" | "pt_footer_title_id" | "pt_footer_sendoff_id"
 ```
 
 ### Intrinsic String Manipulation Types
-#### Uppercase<StringType>
-```ts
-type Greeting = "Hello, world"
-type ShoutyGreeting = Uppercase<Greeting>
-    // type ShoutyGreeting = "HELLO, WORLD"
 
-type ASCIICacheKey<Str extends string> = `ID-${Uppercase<Str>}`
-type MainID = ASCIICacheKey<"my_app">
-    // type MainID = "ID-MY_APP"
+#### Uppercase<StringType>
+
+```ts
+type Greeting = 'Hello, world';
+type ShoutyGreeting = Uppercase<Greeting>;
+// type ShoutyGreeting = "HELLO, WORLD"
+
+type ASCIICacheKey<Str extends string> = `ID-${Uppercase<Str>}`;
+type MainID = ASCIICacheKey<'my_app'>;
+// type MainID = "ID-MY_APP"
 ```
 
 #### Lowercase<StringType>
-```ts
-type Greeting = "Hello, world"
-type QuietGreeting = Lowercase<Greeting>
-    // type QuietGreeting = "hello, world"
 
-type ASCIICacheKey<Str extends string> = `id-${Lowercase<Str>}`
-type MainID = ASCIICacheKey<"MY_APP">
-    // type MainID = "id-my_app"
+```ts
+type Greeting = 'Hello, world';
+type QuietGreeting = Lowercase<Greeting>;
+// type QuietGreeting = "hello, world"
+
+type ASCIICacheKey<Str extends string> = `id-${Lowercase<Str>}`;
+type MainID = ASCIICacheKey<'MY_APP'>;
+// type MainID = "id-my_app"
 ```
 
 #### Capitalize<StringType>
+
 ```ts
-type LowercaseGreeting = "hello, world";
+type LowercaseGreeting = 'hello, world';
 type Greeting = Capitalize<LowercaseGreeting>;
-    // type Greeting = "Hello, world"
+// type Greeting = "Hello, world"
 ```
 
 #### Uncapitalize<StringType>
+
 ```ts
-type UppercaseGreeting = "HELLO WORLD";
+type UppercaseGreeting = 'HELLO WORLD';
 type UncomfortableGreeting = Uncapitalize<UppercaseGreeting>;
-    // type UncomfortableGreeting = "hELLO WORLD"
+// type UncomfortableGreeting = "hELLO WORLD"
 ```
 
 ## Classes Types
 
+-   index Signatures
+
+```ts
+class MyClass {
+    [s: string]: boolean | ((s: string) => boolean);
+
+    check(s: string) {
+        return this[s] as boolean;
+    }
+}
+```
+
+-   implement clauses
+
+You can use an implements clause to check that a class satisfies a particular interface.
+
+An error will be issued if a class fails to correctly implement it:
+
+```ts
+interface Pingable {
+    ping(): void;
+}
+
+class Sonar implements Pingable {
+    ping() {
+        console.log('ping!');
+    }
+}
+
+class Ball implements Pingable {
+    // Class 'Ball' incorrectly implements interface 'Pingable'.
+    //   Property 'ping' is missing in type 'Ball' but required in type 'Pingable'.
+    pong() {
+        console.log('pong!');
+    }
+}
+```
+
+-   extend clauses
+
+```ts
+class Animal {
+    move() {
+        console.log('Moving along!');
+    }
+}
+
+class Dog extends Animal {
+    woof(times: number) {
+        for (let i = 0; i < times; i++) {
+            console.log('woof!');
+        }
+    }
+}
+
+const d = new Dog();
+// Base class method
+d.move();
+// Derived class method
+d.woof(3);
+```
+
+-   Member Visibility
+
+-   public
+
+The default visibility of class members is public. A public member can be accessed anywhere:
+
+```ts
+class Greeter {
+    public greet() {
+        console.log('hi!');
+    }
+}
+const g = new Greeter();
+g.greet();
+```
+
+-   protected
+    protected members are only visible to subclasses of the class they’re declared in.
+
+```ts
+class Greeter {
+    public greet() {
+        console.log('Hello, ' + this.getName());
+    }
+    protected getName() {
+        return 'hi';
+    }
+}
+
+class SpecialGreeter extends Greeter {
+    public howdy() {
+        // OK to access protected member here
+        console.log('Howdy, ' + this.getName());
+    }
+}
+const g = new SpecialGreeter();
+g.greet(); // OK
+g.getName();
+// Property 'getName' is protected and only accessible within class 'Greeter' and its subclasses.
+```
+
+-   private
+    private is like protected, but doesn’t allow access to the member even from subclasses:
+
+```ts
+class Base {
+  private x = 0;
+}
+const b = new Base();
+// Can't access from outside the class
+console.log(b.x);
+// Property 'x' is private and only accessible within class 'Base'.
+
+
+class Derived extends Base {
+  showX() {
+    // Can't access in subclasses
+    console.log(this.x);
+// Property 'x' is private and only accessible within class 'Base'.
+  }
+}
+
+class Base {
+  private x = 0;
+}
+class Derived extends Base {
+Class 'Derived' incorrectly extends base class 'Base'.
+//   Property 'x' is private in type 'Base' but not in type 'Derived'.
+  x = 1;
+}
+```
+
+-   private filed: #
+
+```ts
+class Dog {
+    #barkAmount = 0;
+    personality = 'happy';
+
+    constructor() {}
+}
+
+('use strict');
+class Dog {
+    #barkAmount = 0;
+    personality = 'happy';
+    constructor() {}
+}
+```
+
+-   Static Members
+
+Classes may have static members. These members aren’t associated with a particular instance of the class. They can be accessed through the class constructor object itself:
+
+```ts
+class MyClass {
+    static x = 0;
+    static printX() {
+        console.log(MyClass.x);
+    }
+}
+console.log(MyClass.x);
+MyClass.printX();
+```
+
+Static members can also use the same public, protected, and private visibility modifiers:
+
+```ts
+class MyClass {
+    private static x = 0;
+}
+console.log(MyClass.x);
+// Property 'x' is private and only accessible within class 'MyClass'.
+
+class Base {
+    static getGreeting() {
+        return 'Hello world';
+    }
+}
+class Derived extends Base {
+    myGreeting = Derived.getGreeting();
+}
+```
+
+-   parameter properties
+
+```ts
+class Params {
+  constructor(
+    public readonly x: number,
+    protected y: number,
+    private z: number
+  ) {
+    // No body necessary
+  }
+}
+const a = new Params(1, 2, 3);
+console.log(a.x);
+
+(property) Params.x: number
+console.log(a.z);
+Property 'z' is private and only accessible within class 'Params'.
+```
